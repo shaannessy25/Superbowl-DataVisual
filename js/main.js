@@ -42,8 +42,7 @@ d3.json('../data/superbowl.json').then((data) => {
     const teamNames = data.map((d) => d.Winner)
 
     let uniq = [...new Set(teamNames)]
-    const teams = uniq.join(" ")
-    console.log(teams)
+
 
     const svg = d3.select('body')
                 .append('svg')
@@ -52,17 +51,27 @@ d3.json('../data/superbowl.json').then((data) => {
 
 
     
-    const xScale = d3.scaleOrdinal()
-                    .domain([teams])
-                    .range([0, width - 100])
+    // const xScale = d3.scaleOrdinal()
+    //                 .domain([0, uniq])
+    //                 .range([0, width - 100])
+
+    const xScale = d3.scaleBand()
+                      .domain([uniq])
+                      .range([0, width - 100])
+                      xScale.domain(uniq)
                 
     const yScale = d3.scaleLinear()
                      .domain([d3.min(points), d3.max(points)])
                      .range([height/2, 0])
 
-    const xAxis = d3.axisBottom()
+
+    const ticks = ["49ers", "Steelers", "Ravens", "Colts", "hello"]
+    console.log(ticks)
+
+    const xAxis = d3.axisBottom(d3.scalePoint().domain([uniq]))
                     .scale(xScale)
-                    // .tickSize([0, 22])
+                    .ticks(5)
+
 
     const yAxis = d3.axisLeft()
                     .scale(yScale)
@@ -71,13 +80,14 @@ d3.json('../data/superbowl.json').then((data) => {
     const xAxisTranslate = height/ 2 + 10
     svg.append('g')
         .attr("transform", `translate(50, ${xAxisTranslate})`)
+        .attr('x', width)
+        .attr('y', 90)
         .style('font-size', '6pt')
         .call(xAxis)
 
     svg.append('g')
         .call(yAxis)
         .attr("transform", "translate(50, 10)")
-
 
 
 })
