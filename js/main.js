@@ -1,7 +1,3 @@
-
-var pack = d3.pack()
-    .size([500, 500 - 50]) // <- size
-
 d3.json('../data/superbowl.json').then((data) => {
     const width = 950
     const height = 800
@@ -25,7 +21,7 @@ d3.json('../data/superbowl.json').then((data) => {
                       xScale.domain(uniq)
                 
     const yScale = d3.scaleLinear()
-                     .domain([0, d3.max(points)])
+                     .domain([0, 60])
                      .range([height/2, 0])
 
 
@@ -43,6 +39,7 @@ d3.json('../data/superbowl.json').then((data) => {
 
     const xAxisTranslate = height/ 2 + 10
     svg.append('g')
+        .attr('class', 'grid')
         .attr("transform", `translate(50, ${xAxisTranslate})`)
         .attr('x', width)
         .attr('y', 90)
@@ -50,6 +47,7 @@ d3.json('../data/superbowl.json').then((data) => {
         .call(xAxis)
 
     svg.append('g')
+        .attr('class', 'grid')
         .call(yAxis)
         .attr("transform", "translate(50, 10)")
 
@@ -63,14 +61,23 @@ d3.json('../data/superbowl.json').then((data) => {
        .attr('width', xScale.bandwidth())
        .attr("transform", "translate(50, 10)")
        .attr('fill', 'steelblue')
-       .attr('opacity', 0.6)
+       .attr('opacity', 1)
        .style('stroke', 'white')
-
+       .on('mouseenter', function (data, i) {d3.select(this).attr('opacity', 0.6)})
+       .on('mouseleave', function (data, i) {d3.select(this).attr('opacity', 1)})
     svg.append('text')
-        .attr('opacity', 0.6)
-        .attr('y', 1000)
+        .attr('x', width / 2 + margin)
+        .attr('y', 450)
         .attr('text-anchor', 'middle')
         .text("NFL Teams")
+
+    svg.append('text')
+        .attr('x', -(height / 7) - margin)
+        .attr('y', margin / 2.4)
+        .attr('transform', 'rotate(-90)')
+        .attr('text-anchor', 'middle')
+        .text("Point Scored")
+    
 })
 
 
